@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@model IEnumerable<MindreanDenisaProject.Models.Adapost>
+
+@{
+    ViewData["Title"] = "Adaposturi";
+}
+
+<h1>Adaposturi</h1>
+
+
+@{
+    var user = await UserManager.FindByEmailAsync(User.Identity.Name);
+    var list = await UserManager.GetUsersInRoleAsync("Admin");
+
+    var isInRole = false;
+    foreach (var item in list)
+    {
+        if (item == user)
+        {
+            isInRole = true;
+        }
+    }
+    if (isInRole == true)
+    {
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    }
+
+}
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nume)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Adresa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Oras)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nume)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adresa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Oras.ID)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                    @{
+                        if (isInRole == true)
+                        {
+                            <span>|</span>
+                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> <span>|</span>
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        }
+
+                    }
+
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
